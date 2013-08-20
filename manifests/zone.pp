@@ -70,6 +70,10 @@
 #   Header template used for zone.
 #   It contains SOA record.
 #   (Default: 'bind/zone-header.erb')
+#   
+# [*named_conf_template*]
+#   Template to use to create the entry in named.conf for this zone.
+#   (Default: 'bind/named.conf-zone.erb')
 #
 # [*export_tag*]
 #   Used tag for exported ressource
@@ -118,6 +122,7 @@ define bind::zone(
   $zone_forward   = '',
   $absent         = false,
   $template       = 'bind/zone-header.erb',
+  $named_conf_template = 'bind/named.conf-zone.erb',
   $export_tag     = ''
   ) {
 
@@ -168,7 +173,7 @@ define bind::zone(
     # Register this subnet file into main configuration
     concat::fragment {"bind-include-zone-${zone_name}":
       target  => $bind::config_file,
-      content => template( 'bind/named.conf-zone.erb' ),
+      content => template( $named_conf_template ),
       order   => 50,
     }
 
